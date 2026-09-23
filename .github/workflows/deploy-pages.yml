@@ -30,7 +30,14 @@ jobs:
       - name: Detect structural changes
         id: check
         run: |
-          changed=$(git diff --name-only --diff-filter=AD HEAD~1 HEAD -- 'src/*.md' 2>/dev/null || true)
+          # HEAD~1 可能不存在（根提交/历史重建/shallow），此时与空树比较——
+          # 所有 md 都算"新增"，必然触发部署
+          if git rev-parse --verify --quiet HEAD~1 >/dev/null; then
+            base=HEAD~1
+          else
+            base=$(git hash-object -t tree /dev/null)
+          fi
+          changed=$(git diff --name-only --diff-filter=AD "$base" HEAD -- 'src/*.md' || true)
           echo "added/deleted md files:"
           echo "$changed"
           if [ -n "$changed" ]; then
