@@ -1,0 +1,25 @@
+{
+  "site": {
+    "title": "奇迹课程",
+    "subtitle": "A Course in Miracles",
+    "storagePrefix": "acim:",
+    "uidDomain": "acim-web"
+  },
+  "lessonBook": {
+    "book": "02.练习手册",
+    "filePattern": "(?:^|/)(\\d{3})\\.",
+    "range": [1, 365],
+    "mergedFile": "03.下篇/15.最后的几课/361-365.md",
+    "mergedRange": [361, 365],
+    "firstLesson": "001\\."
+  },
+  "calendar": {
+    "csv": "ics.csv",
+    "rows": 365,
+    "fileNameTemplate": "acim-第{day}课-{ymd}.ics",
+    "defaultTimes": "07:00;22:00",
+    "readFileNameTemplate": "acim-{title}-{ymd}.ics",
+    "prodid": "-//acim-web//daily-lesson//CN",
+    "titleTemplate": "第{day}课 · {title}"
+  }
+}

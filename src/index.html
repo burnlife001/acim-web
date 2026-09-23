@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>奇迹课程</title>
+<style>
+:root {
+  --bg: #fff; --fg: #1c1c1e; --mut: #8a8a8e; --line: #e5e5ea; --acc: #0a84ff;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #000; --fg: #f2f2f7; --mut: #8e8e93; --line: #2c2c2e; }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; padding-top: 48px;
+  font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  background: var(--bg); color: var(--fg);
+}
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+
+/* 顶栏 */
+header {
+  position: fixed; top: 0; left: 0; right: 0; height: 48px; z-index: 20;
+  display: flex; align-items: center; gap: 4px; padding: 0 8px;
+  background: var(--bg); border-bottom: 1px solid var(--line);
+}
+header .t { flex: 1; text-align: center; font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+header button { padding: 8px 10px; color: var(--acc); font-size: 15px; }
+header button:disabled { opacity: .3; }
+#nav-up { font-size: 24px; padding: 4px 12px; line-height: 1; }
+@media (prefers-color-scheme: dark) {
+  #nav-up { color: #64d2ff; }
+}
+
+/* 侧边栏：手机为抽屉，桌面为固定栏；标签超过 15 字截断为 … */
+#side a, #side summary { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#side {
+  position: fixed; top: 48px; left: 0; bottom: 0; z-index: 15;
+  width: 82vw; max-width: 300px; overflow-y: auto; padding: 8px 8px 48px;
+  background: var(--bg); border-right: 1px solid var(--line);
+  transform: translateX(-102%); transition: transform .2s;
+}
+#side.open { transform: none; }
+#backdrop {
+  position: fixed; inset: 48px 0 0 0; z-index: 14;
+  background: rgba(0,0,0,.35); opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+#backdrop.open { opacity: 1; pointer-events: auto; }
+#side ul { list-style: none; margin: 0; padding-left: 16px; }
+#side > ul { padding-left: 0; }
+#side li { margin: 1px 0; }
+#side a {
+  display: block; padding: 6px 8px; border-radius: 8px;
+  color: var(--fg); text-decoration: none; font-size: 15px; line-height: 1.5;
+}
+#side a.on { background: var(--acc); color: #fff; }
+#side summary {
+  cursor: pointer; padding: 6px 8px; border-radius: 8px; font-size: 15px; list-style: none;
+}
+#side summary::before { content: "›"; display: inline-block; margin-right: 6px; color: var(--mut); transition: transform .15s; }
+#side details[open] > summary::before { transform: rotate(90deg); }
+.side-head { padding: 4px 8px 10px; }
+.side-head a { color: var(--acc); text-decoration: none; font-size: 15px; }
+
+/* 正文区 */
+main { min-width: 0; max-width: 720px; margin: 0 auto; padding: 20px 20px 80px; }
+article { font-size: 18px; line-height: 1.9; overflow-wrap: break-word; }
+article h1 { font-size: 1.35em; line-height: 1.5; margin: 0 0 1em; }
+article p { margin: 1em 0; }
+article blockquote { margin: 1em 0; padding-left: 1em; border-left: 3px solid var(--line); color: var(--mut); }
+
+/* 首页卡片 */
+.cards { display: grid; gap: 12px; margin-top: 16px; }
+.card {
+  display: block; border: 1px solid var(--line); border-radius: 12px;
+  padding: 16px; color: var(--fg); text-decoration: none;
+}
+.card b { font-size: 17px; }
+.card small { display: block; margin-top: 4px; color: var(--mut); }
+.card .resume { color: var(--acc); }
+
+/* 目录页与翻页 */
+.toc ul { padding-left: 1.2em; }
+.toc a { color: var(--acc); text-decoration: none; }
+.pn { display: flex; gap: 12px; margin-top: 48px; }
+.pn a {
+  flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: 10px;
+  padding: 10px 12px; color: var(--acc); text-decoration: none; font-size: 14px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.pn .next { text-align: right; }
+.pn .off { visibility: hidden; }
+.mut { color: var(--mut); }
+
+/* 搜索层 */
+#search-ov {
+  position: fixed; inset: 0; z-index: 30; background: var(--bg);
+  display: none; flex-direction: column;
+}
+#search-ov.open { display: flex; }
+#search-bar { display: flex; gap: 8px; padding: 12px; padding-top: max(12px, env(safe-area-inset-top)); border-bottom: 1px solid var(--line); }
+#search-input {
+  flex: 1; min-width: 0; font-size: 16px; padding: 8px 12px;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--fg);
+}
+#search-close { color: var(--acc); padding: 8px; }
+.scopes { display: flex; gap: 6px; padding: 10px 12px; overflow-x: auto; border-bottom: 1px solid var(--line); }
+.scopes button {
+  padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line);
+  color: var(--mut); font-size: 14px; white-space: nowrap;
+}
+.scopes button.on { background: var(--acc); border-color: var(--acc); color: #fff; }
+#results { flex: 1; overflow-y: auto; padding: 4px 16px 60px; }
+.hit { display: block; padding: 12px 2px; border-bottom: 1px solid var(--line); color: var(--fg); text-decoration: none; }
+.hit .t { font-size: 16px; }
+.hit .b { font-size: 12px; color: var(--acc); margin-right: 6px; }
+.hit .s { font-size: 14px; color: var(--mut); margin-top: 4px; line-height: 1.6; }
+.hit mark { background: none; color: #ff3b30; font-weight: 600; }
+
+/* 今日练习 */
+#today { margin-bottom: 20px; }
+#today .row { display: flex; gap: 10px; justify-content: space-between; flex-wrap: wrap; }
+#today .ics {
+  padding: 8px 14px; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--bg); color: var(--acc); font-size: 14px;
+}
+
+/* 轻提示 */
+#toast {
+  position: fixed; left: 50%; bottom: 32px; transform: translateX(-50%);
+  background: #333; color: #fff; padding: 10px 16px; border-radius: 10px;
+  font-size: 14px; line-height: 1.5; max-width: 82vw; z-index: 99;
+  white-space: pre-line; text-align: center;
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+#toast.show { opacity: .95; }
+
+@media (min-width: 768px) {
+  body { display: grid; grid-template-columns: 300px minmax(0, 1fr); }
+  header { grid-column: 1 / -1; }
+  #side {
+    position: sticky; top: 48px; height: calc(100dvh - 48px);
+    transform: none; width: auto; max-width: none;
+  }
+  #backdrop, #menu { display: none; }
+}
+</style>
+</head>
+<body>
+<header>
+  <button id="menu" aria-label="目录">☰</button>
+  <div class="t" id="hd-title">奇迹课程</div>
+  <button id="search-btn" aria-label="搜索">🔍</button>
+  <button id="nav-up" aria-label="向上">&#x2191;</button>
+</header>
+<div id="backdrop"></div>
+<nav id="side"></nav>
+<main id="view"></main>
+<div id="search-ov">
+  <div id="search-bar">
+    <input id="search-input" type="search" placeholder="搜索全文…" enterkeyhint="search">
+    <button id="search-close">取消</button>
+  </div>
+  <div class="scopes" id="scopes"></div>
+  <div id="results"></div>
+</div>
+<script src="vendor/marked.min.js"></script>
+<script src="vendor/minisearch.min.js"></script>
+<script>
+"use strict";
+const $ = (s) => document.querySelector(s);
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+// SW 注册与配置无关，必须留在顶层同步：init 里 await cfg 时 load 事件可能已过，监听器会挂空
+if ("serviceWorker" in navigator) {
+  addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+}
+// 启动：并行取 cfg.json（站点/课表/日历契约）与 tmp/books.json（书集清单 = 子目录名数组）
+(async function init() {
+  let CFG, BOOKS_RAW;
+  try {
+    [CFG, BOOKS_RAW] = await Promise.all([
+      fetch("books/cfg.json", { cache: "no-store" }).then((r) => r.json()),
+      fetch("tmp/books.json", { cache: "no-store" }).then((r) => r.json()),
+    ]);
+  } catch (e) {
+    document.querySelector("#view").textContent = "配置加载失败：" + e.message;
+    return;
+  }
+  const SITE = CFG.site;
+  // 目录名 = key = 展示名；books.json 是 gen-index 输出的字符串数组
+  const BOOKS = BOOKS_RAW;
+  const LB = CFG.lessonBook || null;
+  const CAL = CFG.calendar || null;
+  const bookName = (k) => k;
+
+  // 一次性迁移：英文 key → 中文目录名 key。旧版上线期间的本地续读位置不丢。
+  const MIGRATE = {
+    "text": "01.正文",
+    "workbook": "02.练习手册",
+    "manual": "03.教师指南",
+    "clarification": "04.词汇解释",
+    "05.补编": "05.补编：心理治疗目的、过程与行业",
+  };
+  const posPrefix = SITE.storagePrefix + "pos:";
+  for (const [oldKey, newKey] of Object.entries(MIGRATE)) {
+    const v = localStorage.getItem(posPrefix + oldKey);
+    if (v === null) continue;
+    if (localStorage.getItem(posPrefix + newKey) === null) {
+      localStorage.setItem(posPrefix + newKey, v);
+    }
+    localStorage.removeItem(posPrefix + oldKey);
+  }
+  const posKey = (book) => `${SITE.storagePrefix}pos:${book}`;
+  const lessonRe = LB ? new RegExp(LB.filePattern) : null;
+  const firstLessonRe = LB ? new RegExp(`(?:^|/)${LB.firstLesson}`) : null;
+  const mergedBasename = LB && LB.mergedFile ? LB.mergedFile.split("/").pop() : null;
+  const mergedTitlePrefixRe = LB && LB.mergedRange
+    ? new RegExp(`^${LB.mergedRange[0]}[–-]${LB.mergedRange[1]}[\.、\ws]*`)
+    : null;
+
+  document.title = SITE.title;
+  $("#hd-title").textContent = SITE.title;
+
+/* ---------- index.md 树形清单 → 侧边栏树 ---------- */
+function parseIndex(md) {
+  const root = { children: [] };
+  const stack = [{ node: root, indent: -1 }];
+  for (const line of md.split("\n")) {
+    const m = line.match(/^(\s*)- (.*)$/);
+    if (!m) continue;
+    const indent = m[1].length / 2;
+    while (stack.length > 1 && stack[stack.length - 1].indent >= indent) stack.pop();
+    const parent = stack[stack.length - 1].node;
+    const link = m[2].match(/^\[(.*)\]\(<(.*)>\)$/);
+    const node = link ? { name: link[1], path: link[2] } : { name: m[2], children: [] };
+    (parent.children ||= []).push(node);
+    if (!link) stack.push({ node, indent });
+  }
+  return root.children;
+}
+
+const bookCache = {};
+async function loadBook(key) {
+  if (bookCache[key]) return bookCache[key];
+  const md = await (await fetch(`books/${key}/index.md`)).text();
+  const tree = parseIndex(md);
+  const leaves = [];
+  (function flat(ns, p) {
+    for (const n of ns) {
+      if (n.path) { n.parent = p; leaves.push(n); }
+      else flat(n.children, n.name);
+    }
+  })(tree, "");
+  return (bookCache[key] = { md, tree, leaves });
+}
+
+// 重名文件（如 19 个章节级 00.导言.md）只显示裸名会分不清，重名时带上父级目录
+function nameCtx(leaves) {
+  const seen = new Set(), dup = new Set();
+  for (const l of leaves) {
+    if (seen.has(l.name)) dup.add(l.name);
+    seen.add(l.name);
+  }
+  return (l) => (dup.has(l.name) && l.parent ? `${l.parent} · ${l.name}` : l.name);
+}
+
+/* ---------- 视图 ---------- */
+function closeDrawer() {
+  $("#side").classList.remove("open");
+  $("#backdrop").classList.remove("open");
+}
+
+function treeHtml(nodes, book, active) {
+  const trunc = (s) => (s.length > 15 ? s.slice(0, 15) + "…" : s);
+  let html = "<ul>";
+  for (const n of nodes) {
+    if (n.path) {
+      html += `<li><a href="#/${book}/${esc(n.path)}" title="${esc(n.name)}"${n.path === active ? ' class="on"' : ""}>${esc(trunc(n.name))}</a></li>`;
+    } else {
+      const open = hasPath(n, active) ? " open" : "";
+      html += `<li><details${open}><summary title="${esc(n.name)}">${esc(trunc(n.name))}</summary>${treeHtml(n.children, book, active)}</details></li>`;
+    }
+  }
+  return html + "</ul>";
+}
+function hasPath(node, path) {
+  if (!path) return false;
+  if (node.path) return node.path === path;
+  return node.children.some((c) => hasPath(c, path));
+}
+
+function renderSide(book, tree, active) {
+  $("#side").innerHTML =
+    `<div class="side-head"><a href="#/">‹ 全部书籍</a></div>` + treeHtml(tree, book, active);
+}
+
+function showHome() {
+  document.title = SITE.title;
+  $("#hd-title").textContent = SITE.title;
+  window.scrollTo(0, 0);
+  $("#view").innerHTML = `<h1 style="font-size:22px">${SITE.title}</h1>
+    <p class="mut">${SITE.subtitle || ""}</p>
+    ${LB ? '<div id="today" class="card"></div>' : ""}
+    <div class="cards">${BOOKS.map((k) => `
+      <a class="card" href="#/${esc(k)}" data-book="${esc(k)}">
+        <b>${esc(k)}</b>
+        <small class="meta">…</small>
+      </a>`).join("")}
+    </div>`;
+  if (LB) renderToday();
+  // 首页侧边栏 = 全书集的完整树（loadBook 有缓存，与卡片篇数共用请求）
+  const h = location.hash;
+  Promise.all(BOOKS.map((k) => loadBook(k)))
+    .then(() => {
+      if (location.hash !== h) return; // 等待期间已离开首页
+      $("#side").innerHTML = BOOKS.map(
+        (k) =>
+          `<details><summary>${esc(k)}</summary>${treeHtml(bookCache[k].tree, k, "")}</details>`,
+      ).join("");
+    })
+    .catch(() => {});
+  // 异步补充篇数与续读入口
+  BOOKS.forEach(async (k) => {
+    const { leaves } = await loadBook(k);
+    const ctx = nameCtx(leaves);
+    const pos = localStorage.getItem(posKey(k));
+    const leaf = pos && leaves.find((l) => l.path === pos);
+    const el = $(`[data-book="${k}"] .meta`);
+    if (!el) return;
+    el.innerHTML =
+      `共 ${leaves.length} 篇` +
+      (leaf ? ` · <span class="resume">续读：${esc(ctx(leaf))}</span>` : "");
+    // 续读在外层 <a class="card"> 内，不能用嵌套 <a>；点击时拦下默认行为改跳正文
+    if (leaf) {
+      el.querySelector(".resume").onclick = (e) => {
+        e.preventDefault();
+        location.hash = `#/${k}/${leaf.path}`;
+      };
+    }
+  });
+}
+
+async function showBookHome(key, book) {
+  document.title = `${bookName(key)} · ${SITE.title}`;
+  $("#hd-title").textContent = bookName(key);
+  const pos = localStorage.getItem(posKey(key));
+  const leaf = pos && book.leaves.find((l) => l.path === pos);
+  const ctx = nameCtx(book.leaves);
+  $("#view").innerHTML =
+    (leaf ? `<p><a class="card" href="#/${key}/${esc(leaf.path)}"><b>继续阅读</b><small>${esc(ctx(leaf))}</small></a></p>` : "") +
+    `<div class="toc">${marked.parse(book.md)}</div>`;
+  fixTocLinks(key);
+  window.scrollTo(0, 0);
+}
+
+// 目录页里 marked 生成的相对 .md 链接 → hash 路由
+function fixTocLinks(key) {
+  $("#view").querySelectorAll('.toc a[href$=".md"]').forEach((a) => {
+    a.setAttribute("href", `#/${key}/${a.getAttribute("href")}`);
+  });
+}
+
+async function showArticle(key, book, path) {
+  const i = book.leaves.findIndex((l) => l.path === path);
+  const name = i >= 0 ? book.leaves[i].name : path.split("/").pop().replace(/\.md$/, "");
+  document.title = `${name} · ${bookName(key)}`;
+  $("#hd-title").textContent = bookName(key);
+  let md;
+  try {
+    const res = await fetch(`books/${key}/${encodeURI(path)}`);
+    if (!res.ok) throw new Error(res.status);
+    md = await res.text();
+  } catch {
+    $("#view").innerHTML = `<p class="mut">加载失败：<a href="#/${key}">返回《${bookName(key)}》目录</a></p>`;
+    return;
+  }
+  md = md.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, ""); // front matter
+  md = md.replace(/^[ \t]+/gm, ""); // 原文用行首空格做缩进，不剥掉会被当成代码块（横向溢出）
+  if (!/^#\s/m.test(md.split("\n", 5).join("\n"))) md = `# ${name}\n\n${md}`;
+  const prev = book.leaves[i - 1], next = book.leaves[i + 1];
+  $("#view").innerHTML = `<article>${marked.parse(md)}</article>
+    <nav class="pn">
+      ${prev ? `<a href="#/${key}/${esc(prev.path)}">‹ ${esc(prev.name)}</a>` : '<a class="off"></a>'}
+      ${next ? `<a class="next" href="#/${key}/${esc(next.path)}">${esc(next.name)} ›</a>` : '<a class="off"></a>'}
+    </nav>`;
+  localStorage.setItem(posKey(key), path);
+  window.scrollTo(0, 0);
+  // 让侧边栏高亮项滚入视野
+  $("#side a.on")?.scrollIntoView({ block: "nearest" });
+}
+
+/* ---------- 路由 ---------- */
+function decodeHash() {
+  const h = location.hash.slice(1);
+  try { return decodeURIComponent(h); } catch { return h; }
+}
+
+async function route() {
+  closeDrawer();
+  closeSearch();
+  const seg = decodeHash().replace(/^\/+|\/+$/g, "").split("/").filter(Boolean);
+  $("#nav-up").disabled = !seg.length; // 首页无上级
+  const key = seg[0];
+  if (!key || !BOOKS.includes(key)) return showHome();
+  const book = await loadBook(key);
+  if (seg.length === 1) {
+    renderSide(key, book.tree, "");
+    return showBookHome(key, book);
+  }
+  const path = seg.slice(1).join("/");
+  if (path.includes("..")) return showHome();
+  renderSide(key, book.tree, path);
+  showArticle(key, book, path);
+}
+
+/* ---------- 向上：回到上级（正文页 → 书目录；书目录 → 全部书籍） ---------- */
+$("#nav-up").onclick = () => {
+  const seg = decodeHash().replace(/^\/+|\/+$/g, "").split("/").filter(Boolean);
+  location.hash = seg.length <= 1 ? "#/" : "#/" + seg[0];
+};
+
+/* ---------- ics：课号→时刻表在 cfg.calendar.csv（相对 books/，仅 lesson,times 两列），标题运行时从书内 md 解析 ---------- */
+let icsTable = null;
+function csvRow(line) {
+  const out = [];
+  let cur = "", quoted = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (quoted) {
+      if (ch === '"') { if (line[i + 1] === '"') { cur += '"'; i++; } else quoted = false; }
+      else cur += ch;
+    } else if (ch === '"') quoted = true;
+    else if (ch === ",") { out.push(cur); cur = ""; }
+    else cur += ch;
+  }
+  out.push(cur);
+  return out;
+}
+
+async function loadIcsTable() {
+  if (!CAL) return null;
+  if (icsTable) return icsTable;
+  const txt = await (await fetch(`books/${CAL.csv}`)).text();
+  const rows = {};
+  for (const line of txt.trim().split("\n").slice(1)) {
+    const c = csvRow(line);
+    rows[+c[0]] = { times: c[1].split(";").filter(Boolean) };
+  }
+  return (icsTable = rows);
+}
+
+// 课标题：普通课取文件名去 "NNN." 前缀；合并文件（mergedFile）取正文首个 H1（截到首个标点）
+let lessonTitleCache = null;
+async function lessonTitle(day) {
+  if (!LB) return `${day}课`;
+  if (!lessonTitleCache) {
+    const { leaves } = await loadBook(LB.book);
+    const map = {};
+    for (const l of leaves) {
+      const m = l.path.match(lessonRe);
+      if (m) map[+m[1]] = l.name.replace(/^\d{3}\.\s*/, "").replace(/\.md$/, "");
+    }
+    if (LB.mergedFile) {
+      const mg = leaves.find((l) => l.path === LB.mergedFile);
+      if (mg) {
+        const md = await (await fetch(`books/${LB.book}/${encodeURI(mg.path)}`)).text();
+        const h = md.match(/^#\s*(.+)$/m);
+        const t = h && h[1].replace(mergedTitlePrefixRe, "").split(/[，,。；;]/)[0].trim();
+        if (t) for (let d = LB.mergedRange[0]; d <= LB.mergedRange[1]; d++) map[d] = t;
+      }
+    }
+    lessonTitleCache = map;
+  }
+  return lessonTitleCache[day] || `第${day}课`;
+}
+
+  const tmpl = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => (k in vars ? String(vars[k]) : `{${k}}`));
+
+const iesc = (s) => s.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\n/g, "\\n");
+
+// 轻提示：底部浮条，2.5s 自动消失
+let toastTimer = 0;
+function toast(msg) {
+  let el = $("#toast");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "toast";
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 2500);
+}
+
+// 当前课 = 课表书籍（cfg.lessonBook.book）最近阅读位置指向的课号；未读过课 = 0
+function currentLesson() {
+  if (!LB) return 0;
+  const pos = localStorage.getItem(posKey(LB.book)) || "";
+  const m = pos.match(lessonRe);
+  if (m) return +m[1];
+  return (mergedBasename && pos.endsWith(mergedBasename)) ? LB.mergedRange[0] : 0;
+}
+
+const icsStamp = () => new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
+const VCAL_HEAD = ["BEGIN:VCALENDAR", "VERSION:2.0", `PRODID:${CAL ? CAL.prodid : ""}`, "CALSCALE:GREGORIAN"];
+const evAdd = (e, stamp) => [
+  "BEGIN:VEVENT",
+  `UID:${e.uid}`,
+  `DTSTAMP:${stamp}`,
+  `DTSTART:${e.dt}`,
+  `DTEND:${e.dt}`,
+  `SUMMARY:${iesc(e.title)}`,
+  "BEGIN:VALARM",
+  "ACTION:DISPLAY",
+  "TRIGGER:PT0M",
+  `DESCRIPTION:${iesc(e.title)}`,
+  "END:VALARM",
+  "END:VEVENT",
+].join("\r\n");
+function downloadIcs(name, lines) {
+  const url = URL.createObjectURL(new Blob([lines.join("\r\n")], { type: "text/calendar" }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function downloadDayIcs(offset) {
+  if (!LB || !CAL) return;
+  let day = currentLesson(); // 今天/明天均为当前课，仅落到的日期不同
+  let readLeaf = null, leaves = null; // 非课号阅读目标（导言/跋等任意 .md）
+  if (day < LB.range[0] || day > LB.range[1]) {
+    const pos = localStorage.getItem(posKey(LB.book));
+    if (pos) {
+      // 续读指向非课号文件：也允许导入日程，用默认早晚提醒，不覆盖用户阅读位置
+      ({ leaves } = await loadBook(LB.book));
+      readLeaf = leaves.find((l) => l.path === pos);
+      if (!readLeaf) { toast("续读位置已失效（文件已移动或改名）\n请先打开某篇内容"); return; }
+    } else {
+      // 无续读项：自动选中第一课，并把练习手册续读设为第一课
+      ({ leaves } = await loadBook(LB.book));
+      const l1 = leaves.find((l) => firstLessonRe.test(l.path));
+      if (!l1) return;
+      localStorage.setItem(posKey(LB.book), l1.path);
+      day = LB.range[0];
+    }
+  }
+  const t = new Date();
+  t.setHours(0, 0, 0, 0);
+  const d = new Date(t.getTime() + offset * 86400000);
+  const ymd = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}${String(d.getDate()).padStart(2, "0")}`;
+  let times, title, uidKey, fileName;
+  if (readLeaf) {
+    times = (CAL.defaultTimes || "07:00;22:00").split(";").filter(Boolean);
+    title = nameCtx(leaves)(readLeaf);
+    uidKey = `r-${readLeaf.path}`;
+    fileName = tmpl(CAL.readFileNameTemplate || "acim-{title}-{ymd}.ics", { title, ymd });
+  } else {
+    const row = (await loadIcsTable())[day];
+    if (!row) { toast(`未找到第 ${day} 课的日历数据`); return; }
+    times = row.times;
+    title = tmpl(CAL.titleTemplate, { day, title: await lessonTitle(day) });
+    uidKey = day;
+    fileName = tmpl(CAL.fileNameTemplate, { day, ymd });
+  }
+  const events = times.map((hhmm, i) => ({
+    uid: `${SITE.uidDomain}-${uidKey}-${ymd}-${i}@${SITE.uidDomain}`,
+    dt: `${ymd}T${hhmm.replace(":", "")}00`,
+    title,
+  }));
+  downloadIcs(fileName, [
+    ...VCAL_HEAD,
+    ...events.map((e) => evAdd(e, icsStamp())),
+    "END:VCALENDAR",
+  ]);
+}
+
+function renderToday() {
+  const el = $("#today");
+  if (!el || !LB) return;
+  // 按钮始终可点：无续读项时 downloadDayIcs 会自动落到第一课
+  el.innerHTML = `<div class="row">
+    <button class="ics" data-d="0">导入为今天日历</button>
+    <button class="ics" data-d="1">导入为明天日历</button>
+  </div>`;
+  el.querySelectorAll(".ics").forEach((b) => (b.onclick = () => downloadDayIcs(+b.dataset.d)));
+}
+
+/* ---------- 搜索 ---------- */
+// 中文无空格分词：CJK 按单字+二字组切，拉丁/数字整词保留
+// bigram 只在连续 CJK 段内生成，跨空格/标点不切（否则多词查询会要求不存在的跨界 bigram）
+const tokenize = (text) => {
+  const out = text.toLowerCase().match(/[a-z0-9_.\-]+/g) || [];
+  for (const run of text.match(/[一-鿿㐀-䶿]+/g) || []) {
+    for (let i = 0; i < run.length; i++) {
+      out.push(run[i]);
+      if (i) out.push(run[i - 1] + run[i]);
+    }
+  }
+  return out;
+};
+
+let msPromise = null;
+function loadSearch() {
+  return (msPromise ||= (async () => {
+    const data = await (await fetch("tmp/search.json")).json();
+    const ms = new MiniSearch({
+      fields: ["t", "x"],
+      storeFields: ["b", "p", "t"],
+      tokenize,
+      // AND 组合：所有查询 token 都必须命中（默认 OR 会放进大量只沾边的结果）
+      searchOptions: { boost: { t: 3 }, combineWith: "AND" },
+    });
+    ms.addAll(data.map((d, i) => ({ id: i, ...d })));
+    return { ms, data };
+  })());
+}
+
+let scope = "";
+$("#scopes").innerHTML =
+  `<button data-scope="" class="on">全部</button>` +
+  BOOKS.map((k) => `<button data-scope="${esc(k)}">${esc(k)}</button>`).join("");
+$("#scopes").onclick = (e) => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  scope = b.dataset.scope;
+  $("#scopes").querySelectorAll("button").forEach((x) => x.classList.toggle("on", x === b));
+  doSearch();
+};
+
+function snippet(x, q) {
+  // 只高亮原样匹配的词（与精准过滤同一口径），不再按分词高亮单字/双字
+  const terms = q.split(/\s+/).filter(Boolean);
+  const xl = x.toLowerCase();
+  const W = 100; // 片段窗口宽度
+  const ps = terms.map((t) => xl.indexOf(t.toLowerCase())).filter((p) => p >= 0);
+  let start = 0;
+  if (ps.length) {
+    const lo = Math.min(...ps), hi = Math.max(...ps);
+    // 各词相距不远时居中窗口尽量都覆盖；太远则锚定最先出现的词
+    start = hi - lo <= W - 10 ? Math.max(0, lo - Math.floor((W - (hi - lo)) / 2)) : Math.max(0, lo - 30);
+  }
+  let html = esc(x.slice(start, start + W));
+  for (const t of terms.slice(0, 8)) {
+    const re = new RegExp(esc(t).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
+    html = html.replace(re, (m) => `<mark>${m}</mark>`);
+  }
+  return (start ? "…" : "") + html + "…";
+}
+
+let searchTimer = 0;
+async function doSearch() {
+  const q = $("#search-input").value.trim();
+  const box = $("#results");
+  if (!q) { box.innerHTML = ""; return; }
+  box.innerHTML = msPromise ? "" : `<p class="mut" style="padding:12px 2px">索引加载中（约 2.7MB，仅首次）…</p>`;
+  const { ms, data } = await loadSearch();
+  if ($("#search-input").value.trim() !== q) return; // 等待期间查询已变
+  // 精准匹配：AND 之后仍要求每个词（空格分词）在标题或正文中原样出现，剔除 bigram 分散命中的假阳性
+  const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+  const exact = (r) => {
+    const hay = (r.t + "\n" + data[r.id].x).toLowerCase();
+    return terms.every((t) => hay.includes(t));
+  };
+  const hits = ms.search(q).filter((r) => (!scope || r.b === scope) && exact(r)).slice(0, 50);
+  box.innerHTML = hits.length
+    ? hits.map((r) => `
+      <a class="hit" href="#/${r.b}/${esc(r.p)}">
+        <div class="t"><span class="b">${bookName(r.b)}</span>${esc(r.t)}</div>
+        <div class="s">${snippet(data[r.id].x, q)}</div>
+      </a>`).join("")
+    : `<p class="mut" style="padding:12px 2px">没有找到「${esc(q)}」</p>`;
+}
+
+function openSearch() {
+  $("#search-ov").classList.add("open");
+  $("#search-input").focus();
+  doSearch();
+}
+function closeSearch() { $("#search-ov").classList.remove("open"); }
+$("#search-btn").onclick = openSearch;
+$("#search-close").onclick = closeSearch;
+// 结果指向当前 hash 时不触发 hashchange（route 不会跑），需手动补一次路由，
+// 与从首页进入点击完全一致：关层、重渲染、滚到顶部、记录阅读位置
+$("#results").onclick = (e) => {
+  const a = e.target.closest("a.hit");
+  if (!a) return;
+  e.preventDefault();
+  const href = a.getAttribute("href");
+  // 比较口径：href 是原始中文，location.hash 经浏览器百分号编码，decodeHash() 统一解码后比较
+  if (decodeHash() === href.slice(1)) route();
+  else location.hash = href; // 交给 hashchange → route()
+};
+$("#search-input").oninput = () => { clearTimeout(searchTimer); searchTimer = setTimeout(doSearch, 200); };
+addEventListener("keydown", (e) => { if (e.key === "Escape") closeSearch(); });
+
+/* ---------- 抽屉 ---------- */
+$("#menu").onclick = () => {
+  $("#side").classList.toggle("open");
+  $("#backdrop").classList.toggle("open");
+};
+$("#backdrop").onclick = closeDrawer;
+
+addEventListener("hashchange", route);
+route();
+})();
+
+</script>
+</body>
+
+</html>
+

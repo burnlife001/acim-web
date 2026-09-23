@@ -1,0 +1,73 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # 触发规则：4 本书内新增/删除 .md 文件（含新增一本书=新增 md 文件）才部署；
+  # 仅修改已有文件内容不触发。workflow_dispatch 手动触发始终部署。
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      deploy: ${{ steps.check.outputs.deploy }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect structural changes
+        id: check
+        run: |
+          changed=$(git diff --name-only --diff-filter=AD HEAD~1 HEAD -- 'src/*.md' 2>/dev/null || true)
+          echo "added/deleted md files:"
+          echo "$changed"
+          if [ -n "$changed" ]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  deploy:
+    needs: changes
+    if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.deploy == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # src/ 是发布根。构建产物 (search.json / filelist.json) 由 gen-index 重写
+      # 后随 src/ 一起上传,无需手动提交。gen-icons 幂等(图标已存在则跳过)。
+      - name: Build
+        run: bun scripts/build.mjs
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./src
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
