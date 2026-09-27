@@ -1,0 +1,218 @@
+---
+name: acim
+description: "《奇迹课程》(A Course in Miracles) 全书知识库——正文31章、练习手册365课、教师指南29节、词汇解释。用于以导师身份解答课程问题、应用宽恕/奇迹/知见修正框架、按章节或主题查阅。回答时直接给结论"
+---
+
+<!-- argument-hint: [主题、框架名、章号(如 ch15)、课号(如 第121课)] -->
+
+# 奇迹课程 (A Course in Miracles)
+**来源**: 正文 + 练习手册 + 教师指南 + 词汇解释(四合一全书) | **章节**: 31章 + 365课 + 29节 + 词汇 | **生成**: 2026-09-14
+
+## 如何使用本 Skill
+
+- **无参数** — 加载下方核心框架
+- **按主题** — 问"宽恕""小我""神圣一刻"等, 经主题索引定位章节文件后作答
+- **按章节** — "ch15" 加载该章; "第121课" 定位对应课组文件
+- **导师口径** — 直接给明确结论, 不模棱两可; 用电路/代码/机器学习类比诠释
+- **查原句** — 需引用四部原文时, 调用 `sources/` 中的源文档 (见扩展层)
+
+---
+
+## 核心框架与心智模型
+
+### 总纲
+**凡是真实的, 不受任何威胁; 凡是不真实的, 根本不存在。上主的平安即在其中。**
+课程不是教爱(爱无法传授), 而是清除爱的障碍。与爱相对的是恐惧——但实相没有对立。
+
+### 两个思想体系(根本二分)
+- **小我 (ego)**: 基于分裂假设的解释器。产物 = 罪咎、恐惧、特殊性、死亡。它不可改良, 只能弃用(undo)。
+- **圣灵 (Holy Spirit)**: 上主与分裂心灵间仅余的交流管道; 兼具真知与知见能力的"伟大修正原则"。祂不改变梦的内容, 只改变你对梦的诠释。
+- 每时每刻你只在二者间选顾问。**平安是唯一的试金石**: 不安 = 选错了顾问。
+
+### 奇迹 (Miracle)
+- 奇迹 = 知见的转变(由恐惧切到爱), 不是外在事件。**无难易之分**——所有问题是同一个错误。
+- 奇迹是施受双赢: 疗愈的给予者同时被疗愈("推恩": 给即是得)。
+- 用来证明特殊性(炫耀、传教)即已误用。→ ch01(50条奇迹原则)
+
+### 宽恕 (Forgiveness)——全书唯一的通用修正
+- 宽恕不是纵容行为, 而是**撤销对错误诠释的信仰**: 收回投射 → 交出评判 → 邀请圣灵 → 认出对方清白无罪。
+- 宽恕属于幻相领域, 但它是"以圣灵目的为目的"的幻相, 是由世界通向天堂唯一的桥。
+- **零例外原则**: 一个例外即全盘失效; 例外感标记出最需要练习的位置。→ ch09, ch17, ch22, ch45
+
+### 投射与知见 (Projection makes Perception)
+- 你看到的世界是内心信念的投射; **果冒充因**是小我的核心骗局(先定罪于内, 再"发现"罪在外)。
+- 修正次序: 认出烦扰源于知见而非外境 → 认领回决定权 → 重选诠释。→ ch21, ch28
+
+### 神圣一刻 (Holy Instant)
+- 放下全部过去记忆与未来忧虑, 只愿看见此刻的清白。一次神圣一刻 = 一次小型救赎。
+- 靠愿心允许, 不靠努力制造。→ ch15, ch27
+
+### 特殊关系 vs 神圣关系
+- 特殊关系 = 用一个人填补匮乏的交易(爱的替代品, 实为恨的避风港, 对过去的报复)。
+- 神圣关系 = 同一关系被圣灵重新定向: 目的由"索取"改为"共同觉醒"。**方法: 自问"目的何在"**。→ ch16, ch17, ch22, ch24
+
+### 身体与世界
+- 身体不是自我, 是交流工具; 疾病 = 为分裂作证的假见证。疗愈永远是心灵的疗愈。→ ch08, ch10, ch27
+- 世界是中性的教具: 你赋予它什么目的, 它就教你什么。
+
+### 操练体系(练习手册)
+- 上篇(1–220课): 化解旧知见(清空错误权重); 下篇(221–365课): 活出正知见(直接体验, 文字退位)。
+- 总则: 一天一课; 不设例外; 无需相信, 只需运用; 抗拒本身即练习材料。→ ch32, ch41
+
+### 小小的愿心 (Little Willingness)
+全课程唯一的前提条件: 不要求信心, 只要求愿意。愿心一粒, 圣灵完成其余。→ ch18
+
+### 教师之道(教师指南)
+- 教就是学; 老师与学生互为师生; 以身作则即全部教学。
+- 上主之师不完美, 其使命是在反复教人完美之道中自己学会。→ ch42–44
+
+---
+
+## 章节索引
+
+### 正文 (Text) 31章
+| # | 章名 | 核心框架 |
+|---|------|---------|
+| [ch01](chapters/ch01-qiji-zhendi.md) | 奇迹的真谛 | 50条奇迹原则, 奇迹vs启示, 完美爱驱逐恐惧 |
+| [ch02](chapters/ch02-fenlie-jiushu.md) | 分裂与救赎 | 投射四步骤, 正确否认, 最后审判=正确评估 |
+| [ch03](chapters/ch03-chunjie-zhijian.md) | 纯洁无罪的知见 | 救赎无需牺牲, 知见vs真知, 不评判法则 |
+| [ch04](chapters/ch04-xiaowo-huanxiang.md) | 小我的幻相 | 正授与正学, 匮乏经济, "无需如此"检错 |
+| [ch05](chapters/ch05-liaoyu-yuanman.md) | 疗愈与圆满 | 邀请圣灵, 圣灵-小我二选一, 罪咎机制 |
+| [ch06](chapters/ch06-ai-keti.md) | 爱的课题 | 愤怒三重检证, 投射vs推恩, 圣灵三课 |
+| [ch07](chapters/ch07-tianguo-liwu.md) | 天国的礼物 | 创造之律(推恩即成己), 例外检验, 价值撤销 |
+| [ch08](chapters/ch08-huigui-dao.md) | 回归之道 | 平安为先决条件, 神圣会晤, 身体=交流工具 |
+| [ch09](chapters/ch09-jieshou-jiushu.md) | 接受救赎 | 给予=接受, 尚未疗愈的治疗师 |
+| [ch10](chapters/ch10-jibing-ouxiang.md) | 疾病的偶像 | 疗愈即接纳上主, 疾病之神=偶像崇拜 |
+| [ch11](chapters/ch11-shangzhu-xiaowo.md) | 上主或小我 | 能力守恒, 尊谁为父, 小我运作模式 |
+| [ch12](chapters/ch12-shengling-kecheng.md) | 圣灵的课程 | 圣灵的判断, 恐惧=爱的求助, 投资/撤资 |
+| [ch13](chapters/ch13-qingbai-shijie.md) | 清白无罪的世界 | 定罪=自我定罪, 两种时间观, 对救赎的恐惧 |
+| [ch14](chapters/ch14-zhenli-jiaohui.md) | 真理的教诲 | 平安试金石, 交托决定, 救赎之圆 |
+| [ch15](chapters/ch15-shensheng-yike.md) | 神圣的一刻 | 神圣一刻=完美交流, 终止判断 |
+| [ch16](chapters/ch16-kuanzhu-huanxiang.md) | 宽恕的幻相 | 特殊关系=恨的避风港, 内涵vs形式 |
+| [ch17](chapters/ch17-kuanzhu-shensheng-guanxi.md) | 宽恕与神圣关系 | 筛选的记忆, 画框与画面, 目标优先性 |
+| [ch18](chapters/ch18-chuanyue-mengjing.md) | 穿越梦境 | 取代原则, 小小的愿心, 我什么都不需要做 |
+| [ch19](chapters/ch19-pingan-jing.md) | 平安之境 | 罪与错误之别, 平安的四道障碍 |
+| [ch20](chapters/ch20-shensheng-huijian.md) | 神圣本质之慧见 | 荆棘与百合, 人间救主, 慧见vs判断 |
+| [ch21](chapters/ch21-lixing-zhijian.md) | 理性与知见 | 投射形成知见, 负责宣言 |
+| [ch22](chapters/ch22-jiushu-shensheng-guanxi.md) | 救恩与神圣关系 | 零例外原则, 防卫即脆弱, 和平任务 |
+| [ch23](chapters/ch23-yuji-weidi.md) | 与己为敌 | 五条无明法则, 毫不妥协的救恩 |
+| [ch24](chapters/ch24-teshuxing-mubiao.md) | 特殊性的目标 | 特殊性=爱的替代品, "目的何在"唯一测验 |
+| [ch25](chapters/ch25-shangzhu-zhengyi.md) | 上主的正义 | 知见法则(信什么见什么), 双赢正义 |
+| [ch26](chapters/ch26-guodu-jieduan.md) | 过渡阶段 | 牺牲律, 一种修正(错误单一性) |
+| [ch27](chapters/ch27-liaoyu-mengjing.md) | 疗愈的梦境 | 见证法则(身体是罪证), 修正归圣灵 |
+| [ch28](chapters/ch28-huajie-kongju.md) | 化解恐惧 | 当下记忆, 因果归位, 合一协议 |
+| [ch29](chapters/ch29-juexing.md) | 觉醒 | 上主恐惧症, 偶像="更多", 宽恕终结时间 |
+| [ch30](chapters/ch30-xin-kaishi.md) | 新的开始 | 决定准则七步, 顾问定律 |
+| [ch31](chapters/ch31-zuizhong-huijian.md) | 最终的慧见 | 救恩单纯性, 真正的选项(天堂或地狱) |
+
+### 练习手册 (Workbook) 365课
+| # | 范围 | 主题 |
+|---|------|------|
+| [ch32](chapters/ch32-wb-daoyan.md) | 导言 | 操练总则: 不设例外, 勿自评, 抗拒即材料 |
+| [ch33](chapters/ch33-wb-01-50.md) | 第1–50课 | 撤销旧知见: "我所见毫无意义"系列 |
+| [ch34](chapters/ch34-wb-51-90.md) | 第51–90课+复习一 | 知见转向: 宽恕与慧见入门 |
+| [ch35](chapters/ch35-wb-91-140.md) | 第91–140课+复习二三 | 自我概念的瓦解与救赎 |
+| [ch36](chapters/ch36-wb-141-180.md) | 第141–180课+复习四五 | 疗愈与平安 |
+| [ch37](chapters/ch37-wb-181-220.md) | 第181–220课+复习六 | 强化宽恕, 穿越黑暗 |
+| [ch38](chapters/ch38-wb-xiapian-daoyan.md) | 下篇导言 | "何谓"系列(宽恕/救恩/世界…)用法 |
+| [ch39](chapters/ch39-wb-221-280.md) | 第221–280课 | 正知见训练: 活出平安 |
+| [ch40](chapters/ch40-wb-281-365.md) | 第281–365课+结语 | 交托与静候: 直接体验 |
+| [ch41](chapters/ch41-wb-practice-system.md) | 操练体系 | 复习机制, 每日结构, 常见卡点对策 |
+
+### 教师指南 (Manual for Teachers)
+| # | 范围 | 主题 |
+|---|------|------|
+| [ch42](chapters/ch42-manual-teacher.md) | 壹–拾 | 谁是上主之师, 人格特质, 疗愈 |
+| [ch43](chapters/ch43-manual-world.md) | 拾壹–贰拾 | 太平, 牺牲, 世界终结, 审判, 正义 |
+| [ch44](chapters/ch44-manual-healing.md) | 贰拾壹–贰拾玖 | 语言与疗愈, 轮回, 通灵, 死亡, 复活 |
+
+### 词汇解释 (Clarification of Terms)
+| # | 内容 |
+|---|------|
+| [ch45](chapters/ch45-cihui-terms.md) | 六组对照: 心/灵, 小我/奇迹, 宽恕/基督圣容, 正见/真知, 耶稣/基督, 圣灵 |
+| [ch46](chapters/ch46-cihui-psychotherapy.md) | 心理治疗: 目的/过程/行业 |
+| [ch47](chapters/ch47-cihui-prayer.md) | 祈祷之歌: 祈祷/宽恕/疗愈 |
+
+## 主题索引
+- **宽恕** → ch09, ch16, ch17, ch22, ch24, ch38, ch45, ch47
+- **小我** → ch04, ch11, ch23, ch45
+- **圣灵** → ch05, ch12, ch45
+- **奇迹** → ch01, ch45
+- **投射/知见** → ch02, ch03, ch13, ch21, ch25, ch33
+- **分裂/救赎** → ch02, ch09, ch22, ch26
+- **神圣一刻/当下** → ch15, ch27, ch28
+- **特殊关系/神圣关系** → ch16, ch17, ch22, ch24
+- **身体/疾病/疗愈** → ch08, ch10, ch27, ch36, ch42, ch46
+- **平安** → ch08, ch14, ch19, ch30
+- **特殊性** → ch16, ch24
+- **恐惧** → ch01, ch12, ch13, ch28, ch29
+- **死亡/复活/末世** → ch29, ch43, ch44
+- **操练方法/卡点** → ch32–41
+- **祈祷** → ch01, ch47
+- **牺牲** → ch03, ch26, ch43
+- **判断/评判** → ch03, ch15, ch21, ch42(拾)
+- **觉醒/慧见** → ch20, ch29, ch31
+- **上主之师/教学** → ch42–44
+
+## 支持文件
+- [glossary.md](glossary.md) — 全书关键术词汇编
+- [patterns.md](patterns.md) — 宽恕/奇迹/收回投射等12个实修技术
+- [cheatsheet.md](cheatsheet.md) — 决策树、顾问对照表、危险信号、技术类比速记
+
+---
+
+## 扩展层 — 源文档原句检索 (Extension Layer)
+
+章节文件为**综合摘要** (覆盖完整但非原文)。需引用原句或定位某段原文时, 调用以下源文档:
+
+| 文件 | 内容 | 行数 |
+|------|------|------|
+| `sources/acim-1.正文.md` | 正文 31 章 (T-1.I ~ T-31.VIII) | ~3270 |
+| `sources/acim-2.练习手册.md` | 练习手册 365 课 (W-1 ~ W-365) | ~4210 |
+| `sources/acim-3.教师指南.md` | 教师指南 29 节 (M-in, M-1 ~ M-29) | ~290 |
+| `sources/acim-4.词汇解释.md` | 词汇解释 (C-in, C-1 ~ C-6) + 心理治疗 + 祈祷之歌 | ~330 |
+
+> 注: `sources/` 中的 4 个文件为本 skill 自包含的**真实副本**, 随项目一起走; 不依赖项目外任何路径。
+
+### 检索脚本 (scripts/)
+
+**PowerShell** (Windows, 从项目根执行):
+```powershell
+pwsh .claude/skills/acim/scripts/search-sources.ps1 -Query "宽恕"
+pwsh .claude/skills/acim/scripts/search-sources.ps1 -Query "神圣一刻" -Source "acim-1.正文.md" -Context 3
+pwsh .claude/skills/acim/scripts/search-sources.ps1 -Query "第一百二十一课" -MaxHits 5
+```
+
+**Bash** (git-bash / WSL, 从项目根执行):
+```bash
+bash .claude/skills/acim/scripts/search-sources.sh "宽恕"
+bash .claude/skills/acim/scripts/search-sources.sh "小我" --source acim-1.正文.md --context 3 --max 50
+bash .claude/skills/acim/scripts/search-sources.sh "W-121"
+```
+
+> 课号在源文件中为全中文数字 ("第一百二十一课"), 段号格式为 "T-15.V.3" / "W-121.1" / "M-15.3" / "C-3.2" — 按需选择查询词。
+
+**直接 grep / rg**:
+```bash
+rg "宽恕" ".claude/skills/acim/sources/"
+rg "T-15\.V" ".claude/skills/acim/sources/acim-1.正文.md"
+```
+
+### 引用约定
+
+引用源文档原句时, 使用以下格式标注出处:
+- 正文: `T-1.I.1` (第一篇·第一章·第1段)
+- 练习手册: `W-121` (第121课)
+- 教师指南: `M-15` (第拾伍节)
+- 词汇解释: `C-3.2` (叁·第2段)
+
+---
+
+## 范围与限制
+- 本 skill 仅覆盖四部中文文本内容。章节文件为综合摘要, 非原文; 引用原句时通过扩展层 `sources/` 检索或标注章节出处。回答风格遵循项目设定: 明确的导师口径, 结论先行, {电路/代码/机器学习}三选一做类比。
+- 必须给出确定的回答，禁止模棱两可
+
+## 表达规范 (2026-09-27 增补)
+- **牺牲基调世界的表达纪律**: 读者默认以"牺牲/等待/义务"翻译一切含糊表述。涉及痊愈/宽恕/给予/一体等主题时，必须主动写死三点: **不用你等、不用你做、什么是自动发生的**，并写明因果方向（"你先好，他人被包含"，绝非"你先改变他人才有资格好"）。
+- 含糊不是中立——含糊即默认小我的翻译。宁可啰嗦，不可留白。
+- 已知易误读原句处理范例: W-137.3 "No one is healed alone"（原译"没有一个人可能独自痊愈的"），见 sources 中编者注。
