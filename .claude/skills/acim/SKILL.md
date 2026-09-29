@@ -156,7 +156,7 @@ description: "《奇迹课程》(A Course in Miracles) 全书知识库——正�
 
 ## 支持文件
 - [glossary.md](glossary.md) — 全书关键术词汇编
-- [patterns.md](patterns.md) — 宽恕/奇迹/收回投射等12个基础实修技术 + 3个对话实战模式（上拉默认、制造间、罪咎货币退市）
+- [patterns.md](patterns.md) — 宽恕/奇迹/收回投射等12个基础实修技术 + 5个对话实战模式（配置常量、制造间、罪咎货币退市、撤案、变量实验）
 - [cheatsheet.md](cheatsheet.md) — 决策树、顾问对照表、危险信号、技术类比速记
 
 ---

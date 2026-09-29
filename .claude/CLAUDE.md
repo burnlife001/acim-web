@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-本项目有github pages-ci，agent不主动推送，只提交本地
+本项目有github pages-ci，agent不主动提交和推送
 
 ## 项目性质
 
@@ -44,8 +44,3 @@ Cloudflare Pages：build = `bun scripts/build.mjs`，输出目录 = `src`，根�
 - 脚本 shebang `#!/usr/bin/env bun`，本机必须装 bun
 - `package.json` 只声明 `puppeteer-core` 一个 devDep
 - 课表契约：`books/workbook/` 必须有 360 个 `NNN.` 课号文件 + `03.下篇/15.最后的几课/361-365.md`；`books/ics.csv` 必须恰 365 数据行；`gen-index.mjs` 校验失败则报错
-
-## 参考
-
-- `README.md` —— 命令速查
-- `docs/prd.md` —— 需求与里程碑状态
