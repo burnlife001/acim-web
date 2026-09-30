@@ -713,6 +713,38 @@ $("#backdrop").onclick = closeDrawer;
 
 addEventListener("hashchange", route);
 route();
+
+/* ---------- 触摸翻页：上滑翻到下一页 ---------- */
+let touchStartY = 0;
+let touchStartX = 0;
+const MIN_SWIPE_DISTANCE = 50; // 最小滑动距离
+const MAX_HORIZONTAL_RATIO = 0.5; // 水平偏移不超过垂直偏移的50%
+
+$("#view").addEventListener("touchstart", (e) => {
+  // 忽略多点触摸
+  if (e.touches.length !== 1) return;
+  touchStartY = e.touches[0].clientY;
+  touchStartX = e.touches[0].clientX;
+}, { passive: true });
+
+$("#view").addEventListener("touchend", (e) => {
+  if (e.changedTouches.length !== 1) return;
+
+  const touchEndY = e.changedTouches[0].clientY;
+  const touchEndX = e.changedTouches[0].clientX;
+  const deltaY = touchStartY - touchEndY; // 上滑为正
+  const deltaX = Math.abs(touchEndX - touchStartX);
+
+  // 判断：上滑、距离足够、主要是垂直方向
+  if (deltaY > MIN_SWIPE_DISTANCE && deltaX < Math.abs(deltaY) * MAX_HORIZONTAL_RATIO) {
+    // 找到下一页链接并触发
+    const nextLink = $("#view .pn .next");
+    if (nextLink && !nextLink.classList.contains("off")) {
+      location.hash = nextLink.getAttribute("href");
+    }
+  }
+}, { passive: true });
+
 })();
 
 </script>
