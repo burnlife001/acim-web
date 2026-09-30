@@ -158,6 +158,8 @@ article blockquote { margin: 1em 0; padding-left: 1em; border-left: 3px solid va
 <header>
   <button id="menu" aria-label="目录">☰</button>
   <div class="t" id="hd-title">奇迹课程</div>
+  <button id="cal-today" aria-label="导入今天日历" style="display:none">📅</button>
+  <button id="cal-tomorrow" aria-label="导入明天日历" style="display:none">🗓️</button>
   <button id="search-btn" aria-label="搜索">🔍</button>
   <button id="nav-up" aria-label="向上">&#x2191;</button>
 </header>
@@ -306,16 +308,17 @@ function showHome() {
   document.title = SITE.title;
   $("#hd-title").textContent = SITE.title;
   window.scrollTo(0, 0);
+  // 首页隐藏日历按钮
+  $("#cal-today").style.display = "none";
+  $("#cal-tomorrow").style.display = "none";
   $("#view").innerHTML = `<h1 style="font-size:22px">${SITE.title}</h1>
     <p class="mut">${SITE.subtitle || ""}</p>
-    ${LB ? '<div id="today" class="card"></div>' : ""}
     <div class="cards">${BOOKS.map((k) => `
       <a class="card" href="#/${esc(k)}" data-book="${esc(k)}">
         <b>${esc(k)}</b>
         <small class="meta">…</small>
       </a>`).join("")}
     </div>`;
-  if (LB) renderToday();
   // 首页侧边栏 = 全书集的完整树（loadBook 有缓存，与卡片篇数共用请求）
   const h = location.hash;
   Promise.all(BOOKS.map((k) => loadBook(k)))
@@ -351,6 +354,9 @@ function showHome() {
 async function showBookHome(key, book) {
   document.title = `${bookName(key)} · ${SITE.title}`;
   $("#hd-title").textContent = bookName(key);
+  // 隐藏日历按钮
+  $("#cal-today").style.display = "none";
+  $("#cal-tomorrow").style.display = "none";
   const pos = localStorage.getItem(posKey(key));
   const leaf = pos && book.leaves.find((l) => l.path === pos);
   const ctx = nameCtx(book.leaves);
@@ -373,6 +379,17 @@ async function showArticle(key, book, path) {
   const name = i >= 0 ? book.leaves[i].name : path.split("/").pop().replace(/\.md$/, "");
   document.title = `${name} · ${bookName(key)}`;
   $("#hd-title").textContent = bookName(key);
+  // 只在练习手册的正文页显示日历按钮
+  if (LB && key === LB.book) {
+    $("#cal-today").style.display = "";
+    $("#cal-tomorrow").style.display = "";
+    // 保存当前页面标题供日历使用
+    $("#cal-today").dataset.pageTitle = name;
+    $("#cal-tomorrow").dataset.pageTitle = name;
+  } else {
+    $("#cal-today").style.display = "none";
+    $("#cal-tomorrow").style.display = "none";
+  }
   let md;
   try {
     const res = await fetch(`books/${key}/${encodeURI(path)}`);
@@ -539,6 +556,14 @@ async function downloadDayIcs(offset) {
   if (!LB || !CAL) return;
   let day = currentLesson(); // 今天/明天均为当前课，仅落到的日期不同
   let readLeaf = null, leaves = null; // 非课号阅读目标（导言/跋等任意 .md）
+  let customTitle = null; // 自定义标题（从按钮dataset获取）
+
+  // 优先使用按钮上保存的页面标题
+  const btn = offset === 0 ? $("#cal-today") : $("#cal-tomorrow");
+  if (btn && btn.dataset.pageTitle) {
+    customTitle = btn.dataset.pageTitle;
+  }
+
   if (day < LB.range[0] || day > LB.range[1]) {
     const pos = localStorage.getItem(posKey(LB.book));
     if (pos) {
@@ -562,14 +587,14 @@ async function downloadDayIcs(offset) {
   let times, title, uidKey, fileName;
   if (readLeaf) {
     times = (CAL.defaultTimes || "07:00;22:00").split(";").filter(Boolean);
-    title = nameCtx(leaves)(readLeaf);
+    title = customTitle || nameCtx(leaves)(readLeaf);
     uidKey = `r-${readLeaf.path}`;
     fileName = tmpl(CAL.readFileNameTemplate || "acim-{title}-{ymd}.ics", { title, ymd });
   } else {
     const row = (await loadIcsTable())[day];
     if (!row) { toast(`未找到第 ${day} 课的日历数据`); return; }
     times = row.times;
-    title = tmpl(CAL.titleTemplate, { day, title: await lessonTitle(day) });
+    title = customTitle || tmpl(CAL.titleTemplate, { day, title: await lessonTitle(day) });
     uidKey = day;
     fileName = tmpl(CAL.fileNameTemplate, { day, ymd });
   }
@@ -586,14 +611,7 @@ async function downloadDayIcs(offset) {
 }
 
 function renderToday() {
-  const el = $("#today");
-  if (!el || !LB) return;
-  // 按钮始终可点：无续读项时 downloadDayIcs 会自动落到第一课
-  el.innerHTML = `<div class="row">
-    <button class="ics" data-d="0">导入为今天日历</button>
-    <button class="ics" data-d="1">导入为明天日历</button>
-  </div>`;
-  el.querySelectorAll(".ics").forEach((b) => (b.onclick = () => downloadDayIcs(+b.dataset.d)));
+  // renderToday 函数已废弃，日历按钮改为顶栏全局显示
 }
 
 /* ---------- 搜索 ---------- */
@@ -711,13 +729,17 @@ $("#menu").onclick = () => {
 };
 $("#backdrop").onclick = closeDrawer;
 
+/* ---------- 日历按钮 ---------- */
+$("#cal-today").onclick = () => downloadDayIcs(0);
+$("#cal-tomorrow").onclick = () => downloadDayIcs(1);
+
 addEventListener("hashchange", route);
 route();
 
 /* ---------- 触摸翻页：上滑翻到下一页，下滑回到上一页 ---------- */
 let touchStartY = 0;
 let touchStartX = 0;
-const MIN_SWIPE_DISTANCE = 50; // 最小滑动距离
+const MIN_SWIPE_DISTANCE = 100; // 最小滑动距离
 const MAX_HORIZONTAL_RATIO = 0.5; // 水平偏移不超过垂直偏移的50%
 
 $("#view").addEventListener("touchstart", (e) => {
@@ -738,16 +760,29 @@ $("#view").addEventListener("touchend", (e) => {
   // 判断：距离足够、主要是垂直方向
   if (Math.abs(deltaY) > MIN_SWIPE_DISTANCE && deltaX < Math.abs(deltaY) * MAX_HORIZONTAL_RATIO) {
     if (deltaY > 0) {
-      // 上滑 → 下一页
-      const nextLink = $("#view .pn .next");
-      if (nextLink && !nextLink.classList.contains("off")) {
-        location.hash = nextLink.getAttribute("href");
+      // 上滑 → 下一页（仅在滚动到底部时触发）
+      const scrollHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const clientHeight = document.documentElement.clientHeight;
+      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10; // 10px容差
+
+      if (isAtBottom) {
+        const nextLink = $("#view .pn .next");
+        if (nextLink && !nextLink.classList.contains("off")) {
+          location.hash = nextLink.getAttribute("href");
+        }
       }
     } else {
-      // 下滑 → 上一页
-      const prevLink = $("#view .pn a:not(.next):not(.off)");
-      if (prevLink) {
-        location.hash = prevLink.getAttribute("href");
+      // 下滑 → 上一页（仅在滚动到顶部时触发）
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const isAtTop = scrollTop <= 10; // 10px容差
+
+      if (isAtTop) {
+        const pnLinks = Array.from($("#view .pn").querySelectorAll("a"));
+        const prevLink = pnLinks.find(a => !a.classList.contains("next") && !a.classList.contains("off"));
+        if (prevLink) {
+          location.hash = prevLink.getAttribute("href");
+        }
       }
     }
   }
