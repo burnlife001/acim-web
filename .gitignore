@@ -6,6 +6,7 @@ e2e-out
 
 # build 产物（位于 src/tmp/ 内，跟着发布根一起被打包）
 src/tmp/
+scripts/.build-state.json
 
 # output
 out
