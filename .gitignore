@@ -1,0 +1,47 @@
+# dependencies (bun install)
+node_modules
+
+# e2e 截图输出
+e2e-out
+
+# build 产物（位于 src/tmp/ 内，跟着发布根一起被打包）
+src/tmp/
+scripts/.build-state.json
+
+# output
+out
+dist
+*.tgz
+
+# code coverage
+coverage
+*.lcov
+
+# logs
+logs
+_.log
+report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
+
+# dotenv environment variable files
+.dev.vars
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+04.local_push_高危_最后版本覆盖_当前目录(不确认).ps1
+# caches
+.wrangler/
+.eslintcache
+.cache
+*.tsbuildinfo
+
+# IntelliJ based IDEs
+.idea
+
+# Finder (MacOS) folder config
+.DS_Store
+deepseek-harness/
+.dsh/
+.vscode/
+graphify-out/
