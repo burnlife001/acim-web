@@ -8,6 +8,7 @@
 
 规则:
   日记: 当天无文件 → 无后缀；当天已有文件 → 序号 = 当天最大序号+1（无后缀文件视为 01）
+        落盘带后缀文件时若当天存在无后缀文件，脚本自动将其改名为 -01（目标已存在则跳过并告警）
   问答: 序号 = 现有最大 NNN + 1，三位零填充
 """
 import re
@@ -17,6 +18,7 @@ from pathlib import Path
 
 if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
 
 # 脚本位于 <repo>/.claude/skills/acimd/scripts/，向上 4 级为仓库根，Windows/WSL 通用
 BOOKS = Path(__file__).resolve().parents[4] / "src" / "books"
@@ -36,10 +38,20 @@ def riji_name(title: str) -> str:
     today = date.today().isoformat()
     d = DIRS["riji"]
     pat = re.compile(rf"^{re.escape(today)}(?:-(\d+))?（.*）\.md$")
-    suffixes = [int(m.group(1) or 1) for f in d.glob(f"{today}*") if (m := pat.match(f.name))]
-    if not suffixes:
+    files = [(f, m) for f in d.glob(f"{today}*") if (m := pat.match(f.name))]
+    if not files:
         return f"{today}（{title}）.md"
-    return f"{today}-{max(suffixes) + 1:02d}（{title}）.md"
+    nxt = max(int(m.group(1) or 1) for _, m in files) + 1
+    # 落盘带后缀文件前，把无后缀的首个文件自动改名为 -01，保持序列一致
+    for f, m in files:
+        if m.group(1) is None:
+            target = f.with_name(f"{today}-01{f.name[len(today):]}")
+            if target.exists():
+                print(f"警告: {target.name} 已存在，跳过自动改名 {f.name}", file=sys.stderr)
+            else:
+                f.rename(target)
+                print(f"已自动改名: {f.name} -> {target.name}", file=sys.stderr)
+    return f"{today}-{nxt:02d}（{title}）.md"
 
 
 def wenda_name(title: str) -> str:
