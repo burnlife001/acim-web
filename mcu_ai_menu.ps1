@@ -1,0 +1,1 @@
+E:/__work/BaseTools/codingTools/mcu-ai/scripts/mcu_ai_menu.ps1
